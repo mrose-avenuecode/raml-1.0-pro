@@ -1,0 +1,64 @@
+#%RAML 1.0 Extension
+
+extends: profileApi-base.raml
+
+version: v1
+
+uses:
+  deprecationType: library/deprecation-Types.raml
+
+(deprecationType.plannedEndOfLife): 2016-10-31T00:00:00.000Z
+
+/profiles:
+  get:
+    responses:
+      200:
+        headers: &deprecationHeaders
+          Deprecated:
+            type: deprecationType.deprecated
+          End-Of-Life:
+            type: deprecationType.endOfLifeTimestamp
+      400:
+        headers: *deprecationHeaders
+      500:
+        headers: *deprecationHeaders
+  post:
+    responses:
+      201:
+        headers: *deprecationHeaders
+      400:
+        headers: *deprecationHeaders
+      409:
+        headers: *deprecationHeaders
+      500:
+        headers: *deprecationHeaders
+  /{profileId}:
+    get:
+      responses:
+        200:
+          headers: *deprecationHeaders
+        404:
+          headers: *deprecationHeaders
+        500:
+          headers: *deprecationHeaders
+    put:
+      responses:
+        200:
+          headers: *deprecationHeaders
+        400:
+          headers: *deprecationHeaders
+        404:
+          headers: *deprecationHeaders
+        409:
+          headers: *deprecationHeaders
+        500:
+          headers: *deprecationHeaders
+    delete:
+      responses:
+        200:
+          headers: *deprecationHeaders
+        404:
+          headers: *deprecationHeaders
+        500:
+          headers: *deprecationHeaders
+

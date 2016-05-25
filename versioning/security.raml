@@ -1,0 +1,54 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides resuable declaration of OAuth 2 security constraints
+  for a RESTful API
+
+uses:
+  commonType: library/common-Types.raml
+
+securitySchemes:
+  oauth2:
+    type: OAuth 2.0
+    describedBy:
+      headers:
+        Authorization:
+          description: |
+            OAuth 2 Bearer token header
+          type: string
+          pattern: &bearerTokenPattern ^Bearer ([a-zA-Z0-9\\-\\._\\~\\+\\/])+\\=?
+      queryParameters:
+        access_token:
+          description: |
+            OAuth 2 Bearer token query parameter. this is generally
+            frowned upon, prefer Authorization header instead
+          type: string
+          pattern: *bearerTokenPattern
+      responses:
+        400:
+          description: |
+            did not supply credentials, supplied malformed credentials
+            or supplied multiple credential methods, bad request
+          headers: &authFailureResponseHeaders
+            WWW-Authenticate:
+              type: string
+          body: &authFailureResponseBody
+            application/json:
+              type: commonType.errorResponse
+        401:
+          description: |
+            invalid/expired/malformed/revoked token
+            unauthorized
+          headers: *authFailureResponseHeaders
+          body: *authFailureResponseBody
+        403:
+          description: |
+            forbidden, insufficient privileges
+          headers: *authFailureResponseHeaders
+          body: *authFailureResponseBody
+    settings:
+      authorizationUri: <<authorizationEndpoint>>
+      accessTokenUri: <<accessTokenEndpoint>>
+      authorizationGrants: |
+        [ authorization_code, implicit, refresh_token, 'urn:ietf:params:oauth:grant-type:jwt-bearer' ]
+      scopes: <<scopes>>

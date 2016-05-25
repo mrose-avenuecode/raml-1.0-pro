@@ -1,0 +1,17 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides an implementation of data types and annotations
+  useful for indicating that an API or one of its elements
+  has been depreacated and is scheduled for future retirement
+
+types:
+    deprecated:
+        type: boolean
+        default: true
+    endOfLifeTimestamp:
+        type: datetime
+
+annotationTypes:
+    plannedEndOfLife:
+        type: endOfLifeTimestamp

@@ -1,0 +1,75 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides the basic data types needed to implement
+  the example profile API
+
+uses:
+  commonType: library/common-Types.raml
+  hypermediaType: library/hypermedia-Types.raml
+
+types:
+  
+  profileId:
+    type: string
+    
+  profileProperties:
+    type: object
+    properties:
+      firstName: string
+      lastName: string
+      email: string
+  
+  profilePrototype:
+    type: profileProperties
+      
+  profile:
+    type: profileProperties
+    properties:
+      profileId: profileId
+
+  profileLinks:
+    type: hypermediaType.links
+    properties:
+      _friends: hypermediaType.link
+      
+  profileResponse:
+    type: profile
+    properties:
+      _meta: hypermediaType.responseMetadata
+      _links: profileLinks
+      
+  profileCollectionResponse:
+    type: hypermediaType.collectionResponse
+    properties:
+      profiles: hypermediaType.link[]
+      
+  friendPrototype:
+    type: object
+    properties:
+      friend: hypermediaType.url
+      
+  friendId:
+    type: profileId
+      
+  friendCollectionMemberLinks:
+    type: object
+    properties:
+      _friend: hypermediaType.link
+      
+  friendCollectionMember:
+    type: object
+    properties:
+      friendId: friendId
+      _links: friendCollectionMemberLinks
+      
+  friendCollectionMemberResponse:
+    type: friendCollectionMember
+    properties:
+      _meta: hypermediaType.responseMetadata
+      
+  friendCollectionResponse:
+    type: hypermediaType.collectionResponse
+    properties:
+      friends: friendCollectionMember[]
+

@@ -1,0 +1,74 @@
+#%RAML 1.0
+title: Profile API
+version: v1
+protocols: [ HTTPS ]
+baseUri: //{apiHost}:{apiPort}/api/{version}
+baseUriParameters:
+  apiHost:
+    type: string
+  apiPort:
+    type: integer
+    default: 443
+
+uses:
+  commonType: library/common-Types.raml
+  hypermediaType: library/hypermedia-Types.raml
+  commonResourceType: library/common-ResourceTypes.raml
+  commonTrait: library/common-Traits.raml
+  profileType: profileApi-Types.raml
+  security: security.raml
+
+/profiles:
+  type:
+    commonResourceType.collection:
+      collectionResponseType: profileType.profileCollectionResponse
+      errorResponseType: commonType.errorResponse
+      collectionMemberPrototypeType: profileType.profilePrototype
+      collectionMemberResponseType: profileType.profileResponse
+  get:
+    is: &collectionTraits [ commonTrait.pageable, commonTrait.sortable ]
+    securedBy: &registeredUsers
+      security.oauth2:
+        scopes: [ registered ]
+  post:
+    securedBy: *registeredUsers
+        
+  /{profileId}:
+    uriParameters:
+      profileId: profileType.profileId
+    type:
+      commonResourceType.collectionMember:
+        errorResponseType: hypermediaType.errorResponse
+        collectionMemberPrototypeType: profileType.profilePrototype
+        collectionMemberResponseType: profileType.profileResponse
+        defaultResponseType: hypermediaType.defaultResponse
+    get:
+      securedBy: *registeredUsers
+    put:
+      securedBy: *registeredUsers
+    delete:
+      securedBy: *registeredUsers
+      
+    /friends:
+      type:
+        commonResourceType.collectionMemberRelatedCollection:
+          collectionMemberRelatedCollectionResponseType: profileType.friendCollectionResponse
+          errorResponseType: hypermediaType.errorResponse
+          collectionMemberRelatedCollectionMemberPrototypeType: profileType.friendPrototype
+          collectionMemberRelatedCollectionMemberResponseType: profileType.friendCollectionMemberResponse
+      get:
+        is: *collectionTraits
+        securedBy: *registeredUsers
+      post:
+        securedBy: *registeredUsers
+        
+      /{friendId}:
+        uriParameters:
+          friendId: profileType.friendId
+        type:
+          commonResourceType.collectionMemberRelatedCollectionMember:
+            errorResponseType: hypermediaType.errorResponse
+            defaultResponseType: hypermediaType.defaultResponse
+        delete:
+          securedBy: *registeredUsers
+      

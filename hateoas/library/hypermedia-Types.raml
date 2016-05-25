@@ -1,0 +1,57 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides a set of resusable data types that extend common types
+  to add linking and hypermedia to REST APIs
+
+uses:
+    commonType: common-Types.raml
+
+types:
+  url:
+    type: string
+    pattern: |
+      (https?):\/\/((?:[a-z0-9.-]|%[0-9A-F]{2}){3,})(?::(\d+))?((?:\/(?:[a-z0-9-._~!$&'()*+,;=:@]|%[0-9A-F]{2})*)*)
+  link:
+    type: object
+    properties:
+      href:
+        type: url
+      title?:
+        type: string
+  links:
+    type: object
+    properties:
+      self: link
+  message:
+    type: commonType.message
+    properties:
+      href?: link
+  collectionPagingLinks:
+    type: links
+    properties:
+      first?:
+        type: link
+      prev?:
+        type: link
+      next?:
+        type: link
+      last?:
+        type: link
+  responseMetadata:
+    type: commonType.responseMetadata
+    properties:
+      messages:
+        type: message[]
+  defaultResponse:
+    type: commonType.responseMetadata
+    properties:
+      _meta:
+        type: responseMetadata
+  collectionResponse:
+    type: defaultResponse
+    properties:
+      _meta: responseMetadata
+      _links: collectionPagingLinks
+  errorResponse:
+    type: defaultResponse

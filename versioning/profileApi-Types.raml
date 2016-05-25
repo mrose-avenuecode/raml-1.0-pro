@@ -1,0 +1,42 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides the basic data types needed to implement
+  the example profile API
+
+uses:
+  commonType: library/common-Types.raml
+
+types:
+
+  profileId:
+    type: string
+
+  profileProperties:
+    type: object
+    properties:
+      firstName: string
+      lastName: string
+      email: string
+
+  profilePrototype:
+    type: profileProperties
+    properties:
+      friends: profileId[]
+
+  profile:
+    type: profileProperties
+    properties:
+      profileId: profileId
+      friends: profile[]
+
+  profileResponse:
+    type: profile
+    properties:
+       _meta: commonType.responseMetadata
+
+  profileCollectionResponse:
+    type: commonType.collectionResponse
+    properties:
+      profiles: profile[]
+      

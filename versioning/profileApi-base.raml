@@ -1,0 +1,50 @@
+#%RAML 1.0
+title: Profile API
+version:
+protocols: [ HTTPS ]
+baseUri: //{apiHost}:{apiPort}/api/{version}
+baseUriParameters:
+  apiHost:
+    type: string
+  apiPort:
+    type: integer
+    default: 443
+
+uses:
+  commonType: library/common-Types.raml
+  commonResourceType: library/common-ResourceTypes.raml
+  commonTrait: library/common-Traits.raml
+  profileType: profileApi-Types.raml
+  security: security.raml
+
+/profiles:
+  type:
+    commonResourceType.collection:
+      collectionResponseType: profileType.profileCollectionResponse
+      errorResponseType: commonType.errorResponse
+      collectionMemberPrototypeType: profileType.profilePrototype
+      collectionMemberResponseType: profileType.profileResponse
+  get:
+    is: &collectionTraits [ commonTrait.pageable, commonTrait.sortable ]
+    securedBy: &registeredUsers
+      security.oauth2:
+        scopes: [ registered ]
+  post:
+    securedBy: *registeredUsers
+        
+  /{profileId}:
+    uriParameters:
+      profileId: profileType.profileId
+    type:
+      commonResourceType.collectionMember:
+        errorResponseType: commonType.errorResponse
+        collectionMemberPrototypeType: profileType.profilePrototype
+        collectionMemberResponseType: profileType.profileResponse
+        defaultResponseType: commonType.defaultResponse
+    get:
+      securedBy: *registeredUsers
+    put:
+      securedBy: *registeredUsers
+    delete:
+      securedBy: *registeredUsers
+      

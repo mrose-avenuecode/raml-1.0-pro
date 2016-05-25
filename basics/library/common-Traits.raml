@@ -1,0 +1,19 @@
+#%RAML 1.0 Library
+
+usage: |
+  provides commonly used query parameters that can be applied
+  to collection queries to sort and page through large
+  result sets
+
+uses:
+  commonType: common-Types.raml
+
+traits:
+  pageable:
+    queryParameters:
+      offset: commonType.pagingOffset
+      limit: commonType.pagingLimit
+  sortable:
+    queryParameters:
+      sortBy: commonType.sortingSortKey
+      

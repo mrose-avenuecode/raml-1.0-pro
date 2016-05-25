@@ -1,0 +1,65 @@
+#%RAML 1.0 Library
+
+usage: |
+  contains the extended versions of profile API data types
+  enhanced for hypermedia
+
+uses:
+  commonType: library/common-Types.raml
+  hypermediaType: library/hypermedia-Types.raml
+  profileType: profileApi-Types.raml
+
+types:
+
+  profilePrototype:
+    type: profileType.profileProperties
+    
+  profile:
+    type: profilePrototype
+    properties:
+      profileId: profileType.profileId
+
+  profileLinks:
+    type: hypermediaType.links
+    properties:
+      _friends: hypermediaType.link
+      
+  profileResponse:
+    type: profileType.profile
+    properties:
+      _meta: hypermediaType.responseMetadata
+      _links: profileLinks
+      
+  profileCollectionResponse:
+    type: hypermediaType.collectionResponse
+    properties:
+      profiles: hypermediaType.link[]
+      
+  friendPrototype:
+    type: object
+    properties:
+      friend: hypermediaType.url
+      
+  friendId:
+    type: profileType.profileId
+      
+  friendCollectionMemberLinks:
+    type: object
+    properties:
+      _friend: hypermediaType.link
+      
+  friendCollectionMember:
+    type: object
+    properties:
+      friendId: friendId
+      _links: friendCollectionMemberLinks
+      
+  friendCollectionMemberResponse:
+    type: friendCollectionMember
+    properties:
+      _meta: hypermediaType.responseMetadata
+      
+  friendCollectionResponse:
+    type: hypermediaType.collectionResponse
+    properties:
+      friends: friendCollectionMember[]
